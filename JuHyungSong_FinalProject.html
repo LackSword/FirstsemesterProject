@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Project</title>
+		<meta charset="UTF-8">
+		<meta name="description" content="JuHyungSong Final project">
+		<link rel="stylesheet" href="css/style.css">
+		<!-- demonstrate HTML comment -->
+	</head>
+	<body onload = "displayStoreItems();displayCartItems();setCurrentTime();">
+	<header>
+			<h1 id = seeber>
+				Online Game Item Store
+			</h1>
+	</header>
+	<nav>
+		<a href="#Bottom">go to the bottom</a>
+	</nav>
+		<main>
+					<span id="dateArea" style="float: right;">Date/Time</span>
+					<br/>
+					<span style="float: right;">
+						Currency:
+						<img class="currencyFlag" src="images\CAD.png"/>
+						<select id="currencySelector" onchange = "convertCurrency();">
+							<option selected value="CAD">CAD</option>
+							<option value="USD">USD</option>
+							<option value="KRW">KRW</option>
+						</select>
+					</span>
+					<br>
+					<fieldset> <legend>Store Items</legend>
+						<select id="displayFilter" onchange ="displayStoreItems();">
+							<option>All</option>
+							<option>Sword</option>
+							<option>Armor</option>
+							<option>Skill Book</option>
+						</select>
+						<br/>
+						<table>
+								<tbody>
+								<tr>
+									<td class = "test">| ID |</td>
+									<td class = "test">| Product Name |</td>
+									<td class = "test">| Price |</td>
+									<td  class = "test">| Qty |</td>
+									<td  class = "test">| Max |</td>
+									<td  class = "test">| Category |</td>
+									<td  class = "test">| Image |</td>
+								</tr>
+							</tbody>
+						 </table>
+						<div id="inventoryOutput" ></div>
+					</fieldset>
+					<br>
+					<fieldset> <legend>Select Items</legend>
+						<p>
+							Item ID: <input type="text" id="addItemId" maxlength=13 />
+							&nbsp;
+							<span id="addIDValidationMessage"></span>
+						</p>
+						<p>
+							Qty: <input type="number" id="addItemQty" value ="0"/>
+							&nbsp;
+							<span id="addQtyValidationMessage"></span>
+						</p>
+						<p>
+							<input type="button" value="Item Details" onclick = "validate(3);"/>
+							<input type="button" value="Add Item" onclick = "validate(1);"/>
+							<input type="button" value="Remove Item" onclick = "validate(2);"/>
+						</p>
+					</fieldset>
+					<br>
+					<fieldset> <legend>Your Cart</legend>
+						<span><strong>| ID | Price | Qty | Subtotal |</strong></span>
+						<br>
+						<div id="cartOutput"></div>
+						<br>
+						<div id="cartCheckout"></div>
+					</fieldset>
+					<br>
+					<fieldset> <legend>Review an Item</legend>
+						<p>Product ID: <input type="text" maxlength=13 id="reviewId" />&nbsp;<span id="reviewIdMsg"></span></p>
+						<p>Review: <input type="text" id="reviewDesc" size="100"/></p>
+						<p><input type="button" value="Review" onclick = "review();"/></p>
+					</fieldset>
+		</main>
+		<footer id = "Bottom">
+			  <p>Posted by: JuHyungSong</p>
+			  <p>Contact information: <a href="mailto:j_song99315@fanshaweonline.ca">j_song99315@fanshaweonline.ca</a></p>
+		</footer>
+        <!-- Javascript -->
+				<script type="text/javascript" src="js/Items.js"></script>
+				<script src ="js/description.js"></script>
+				<script>
+				//global scope
+				var storeItems = [];
+				var cartItems =[];
+				var category = ["Sword","Armor","Skill Book"];
+				var reviews = ["good","satisfied","bad"];
+				var image =["necross.jpg","EC0006.jpg","solios.jpg","respledent.jpg","skillbook.png","imlerith.png","guildwar2.jpg"];
+				var g_currency_State =document.getElementById("currencySelector").value;
+
+				storeItems.push(new Item(generateTrackingNumber(),"Necross",18.12,10,5,category[0],0.99,reviews,d_sword[0],image[0]));
+				storeItems.push(new Item(generateTrackingNumber(),"EC0006",18.12,10,1,category[1],0.99,reviews,d_armor[0],image[1]));
+				storeItems.push(new Item(generateTrackingNumber(),"DM BDOR Solios",18.12,10,5,category[1],0.99,reviews,d_armor[1],image[2]));
+				storeItems.push(new Item(generateTrackingNumber(),"Respledent",18.12,10,3,category[1],0.99,reviews,d_armor[2],image[3]));
+				storeItems.push(new Item(generateTrackingNumber(),"Necronomicon",128.12,10,30,category[2],0.99,reviews,d_skill_book[0],image[4]));
+				storeItems.push(new Item(generateTrackingNumber(),"Imlerith",28.12,60,30,category[1],0.99,reviews,d_armor[3],image[5]));
+
+				storeItems.push(new Item(generateTrackingNumber(),"guildwar2",38.12,60,30,category[1],0.99,reviews,d_armor[4],image[6]));
+				storeItems.push(new Item(generateTrackingNumber(),"Necronomicon",128.12,10,30,category[2],0.99,reviews,d_skill_book[0],image[4]));
+				storeItems.push(new Item(generateTrackingNumber(),"Necronomicon",128.12,10,30,category[2],0.99,reviews,d_skill_book[0],image[4]));
+				storeItems.push(new Item(generateTrackingNumber(),"Necronomicon",128.12,10,30,category[2],0.99,reviews,d_skill_book[0],image[4]));
+				storeItems.push(new Item(generateTrackingNumber(),"Necronomicon",128.12,10,30,category[2],0.99,reviews,d_skill_book[0],image[4]));
+				storeItems.push(new Item(generateTrackingNumber(),"Necronomicon",128.12,10,30,category[2],0.99,reviews,d_skill_book[0],image[4]));
+				storeItems.push(new Item(generateTrackingNumber(),"Necronomicon",128.12,10,30,category[2],0.99,reviews,d_skill_book[0],image[4]));
+				storeItems.push(new Item(generateTrackingNumber(),"Necronomicon",128.12,10,30,category[2],0.99,reviews,d_skill_book[0],image[4]));
+
+
+				//Test
+				// cartItems.push(new cartItem(generateTrackingNumber().toString(),18.12,2,5));
+				// cartItems.push(new cartItem(generateTrackingNumber().toString(),18.12,2,5));
+				// cartItems.push(new cartItem(generateTrackingNumber().toString(),18.12,2,5));
+
+				function displayStoreItems()
+				{
+					let getCategory = document.getElementById("displayFilter");
+					let target = document.getElementById("inventoryOutput");
+					let theTable = document.createElement("table");
+					let theTbody = document.createElement("tbody");
+					theTable.width = "100%";
+
+					//Sword
+
+					//Armor
+
+					//Skill_book
+
+					//all
+					if(getCategory.value == "All")
+					{
+						target.innerHTML = "";
+						// var theTbody = document.createElement("tbody");
+						for (var y = 0; y < storeItems.length; y++)
+						{
+							var theRow = document.createElement("tr");
+							for(var j =0; j < 7; j++)
+							{
+								var theColumn = document.createElement("td");
+								if(j==0)
+								{
+									// debugger;
+									// var id = document.createElement("p");
+									// theColumn.appendChild(id);
+									theColumn.innerText = storeItems[y].itemID;
+									theColumn.setAttribute("class", "inventoryOutput");
+									theRow.appendChild(theColumn);
+								}
+								else if(j==1)
+								{
+									theColumn.innerText = storeItems[y].nproduct;
+									theColumn.setAttribute("class", "inventoryOutput");
+									theRow.appendChild(theColumn);
+								}
+								else if(j==2)
+								{
+									theColumn.innerText = (storeItems[y].price).toFixed(2);
+									theColumn.setAttribute("class", "inventoryOutput");
+									theRow.appendChild(theColumn);
+								}
+								else if(j==3)
+								{
+									theColumn.innerText = storeItems[y].qty;
+									theColumn.setAttribute("class", "inventoryOutput");
+									theRow.appendChild(theColumn);
+								}
+								else if(j==4)
+								{
+									theColumn.innerText = storeItems[y].max;
+									theColumn.setAttribute("class", "inventoryOutput");
+									theRow.appendChild(theColumn);
+								}
+								else if(j==5)
+								{
+									theColumn.innerText = storeItems[y].category;
+									theColumn.setAttribute("class", "inventoryOutput");
+									theRow.appendChild(theColumn);
+								}
+								else if(j==6)
+								{
+									// theColumn.innerText = storeItems[y].image;
+									var theImg = document.createElement("img");
+									theImg.src = "images/"+ storeItems[y].image;
+									theImg.width =100;
+									theImg.height =80;
+									theImg.setAttribute("class", "inventoryOutput");
+									// theColumn.appendChild(theImg);
+									theRow.appendChild(theImg);
+								}
+
+							}//end of j statement
+							theTbody.appendChild(theRow);
+						}//end of y for statement
+						theTable.appendChild(theTbody);
+						target.appendChild(theTable);
+				}//end of All
+
+				//Sword
+				else if(getCategory.value == "Sword")
+				{
+					filter(getCategory.value,theTable,theTbody,target);
+				}
+				//Armor
+				else if(getCategory.value == "Armor")
+				{
+					filter(getCategory.value,theTable,theTbody,target);
+				}
+				//Skill Book
+				else if(getCategory.value == "Skill Book")
+				{
+					filter(getCategory.value,theTable,theTbody,target);
+				}
+			}//end of function
+
+			function filter(category,theTable,theTbody,target)
+			{
+						target.innerHTML = "";
+						for (var y = 0; y < storeItems.length; y++)
+						{
+								if(storeItems[y].category != category)
+								{
+										continue;
+								}
+								var theRow = document.createElement("tr");
+								for(var j =0; j < 7; j++)
+								{
+									var theColumn = document.createElement("td");
+									if(j==0)
+									{
+										// debugger;
+										// var id = document.createElement("p");
+										// theColumn.appendChild(id);
+										theColumn.innerText = storeItems[y].itemID;
+										theColumn.setAttribute("class", "inventoryOutput");
+										theRow.appendChild(theColumn);
+									}
+									else if(j==1)
+									{
+										theColumn.innerText = storeItems[y].nproduct;
+										theColumn.setAttribute("class", "inventoryOutput");
+										theRow.appendChild(theColumn);
+									}
+									else if(j==2)
+									{
+										theColumn.innerText = (storeItems[y].price).toFixed(2);
+										theColumn.setAttribute("class", "inventoryOutput");
+										theRow.appendChild(theColumn);
+									}
+									else if(j==3)
+									{
+										theColumn.innerText = storeItems[y].qty;
+										theColumn.setAttribute("class", "inventoryOutput");
+										theRow.appendChild(theColumn);
+									}
+									else if(j==4)
+									{
+										theColumn.innerText = storeItems[y].max;
+										theColumn.setAttribute("class", "inventoryOutput");
+										theRow.appendChild(theColumn);
+									}
+									else if(j==5)
+									{
+										theColumn.innerText = storeItems[y].category;
+										theColumn.setAttribute("class", "inventoryOutput");
+										theRow.appendChild(theColumn);
+									}
+									else if(j==6)
+									{
+										// theColumn.innerText = storeItems[y].image;
+										var theImg = document.createElement("img");
+										theImg.src = "images/"+ storeItems[y].image;
+										theImg.width =100;
+										theImg.height =80;
+										theImg.setAttribute("class", "inventoryOutput");
+										// theColumn.appendChild(theImg);
+										theRow.appendChild(theImg);
+									}
+
+								}//end of j statement
+								theTbody.appendChild(theRow);
+
+							theTable.appendChild(theTbody);
+							target.appendChild(theTable);
+						}//end of y for statement
+			}
+
+			function displayCartItems()
+			{
+				let target2 = document.getElementById("cartOutput");
+				let target3 = document.getElementById("cartCheckout");
+				let subtotal_1 = 0;//itemSubtotal
+				let subtotal_2 = 0;//itemSubtotal
+				let subtotal_3 = 0;//itemSubtotal
+				let eShipping = 0;//EstimatedShipping
+				let tax = 0;
+				let total = 0;
+				let str= "";
+
+
+				//when there is no cart Item
+				if(cartItems.length ==0)
+				{
+					target2.innerHTML = "No Items in Cart";
+				}
+				//display part
+				else
+				{
+					for(let i = 0; i <cartItems.length; i++ )
+					{
+						// debugger;
+						str = str
+						+cartItems[i].itemID+ " "
+						+(cartItems[i].price).toFixed(2)+ " "
+						+cartItems[i].qty+ " "
+						+"$" +(cartItems[i].price *cartItems[i].qty).toFixed(2) +"<br>";
+						subtotal_1 = cartItems[i].price *cartItems[i].qty;
+						subtotal_2 = subtotal_2 + subtotal_1;
+						eShipping = eShipping +cartItems[i].shipping;
+						if(i == cartItems.length-1)//last iterator
+						{
+							subtotal_3 = subtotal_2+eShipping;
+							tax = subtotal_3*0.13;
+							total = subtotal_3+tax;
+						}
+					}
+
+					target2.innerHTML = str;
+					target3.innerHTML ="<hr>"+"Itmes Subtotal : $"+subtotal_2.toFixed(2)+"<br>"+
+					"Estimated Shipping : $"+eShipping+"<br>"+
+					"Subtotal : $"+subtotal_3.toFixed(2)+"<br>"+
+					"Estimated Tax : $"+tax.toFixed(2)+"<br>"+
+					"Order Total : $"+total.toFixed(2)+"<br>";
+				}
+			}//end of function
+
+			function convertCurrency()
+			{
+				//1.Currency state를 먼저 만든다
+				//2.Default 값을 CAD로 주고
+				//3.object 에 메소드를 주면 되지 않을까 생각됨
+				//4.순환을 시킨다음에 매칭된거랑 찾아서 그 찾은 값을 넘기면됨
+				//5. USD 에서 CAD로 돌릴때
+				//6. multply value 만 따로 뺴서 함수로 만듬
+				let l_currency_State =document.getElementById("currencySelector").value;
+				//한 함수당 필요한 인자값은?
+
+						if(g_currency_State == "CAD")//정할수있음 함수로
+						{
+							internalCurrency(l_currency_State,"KRW",868.17,"USD",0.71);
+						}
+
+						else if(g_currency_State == "USD")//정할수있음 함수로
+						{
+							internalCurrency(l_currency_State,"CAD",1.40,"KRW",1219);
+						}
+						else if(g_currency_State == "KRW")//정할수있음 함수로
+						{
+							internalCurrency(l_currency_State,"CAD",(1/868.17),"USD",(1/1219));
+						}
+					displayStoreItems();
+					displayCartItems();
+			}//end of function
+			function internalCurrency(l_currency_State,chooseCountry1,multiply1,chooseCountry2,multiply2)
+			{
+				let flag = document.querySelector(".currencyFlag");
+
+						if(g_currency_State == l_currency_State)
+						{
+							for(let i =0; i < storeItems.length; i++)
+							{
+								storeItems[i].price = storeItems[i].price *1;
+							}
+							for(let i = 0; i < cartItems.length; i++)
+							{
+								cartItems[i].price = cartItems[i].price *1;
+								cartItems[i].shipping = cartItems[i].shipping *1;
+							}
+						}
+						else if (l_currency_State == chooseCountry1)
+						{
+							for(let s =0; s < storeItems.length; s++)
+							{
+								storeItems[s].price = storeItems[s].price *multiply1;
+							}
+							for(let s = 0; s < cartItems.length; s++)
+							{
+								cartItems[s].price = cartItems[s].price * multiply1;
+								cartItems[s].shipping = cartItems[s].shipping *multiply1;
+							}
+						}
+						else if (l_currency_State == chooseCountry2)
+						{
+							for(let i =0; i < storeItems.length; i++)
+							{
+								storeItems[i].price = storeItems[i].price * multiply2;
+
+							}
+							for(let i = 0; i < cartItems.length; i++)
+							{
+								cartItems[i].price = cartItems[i].price * multiply2;
+								cartItems[i].shipping = cartItems[i].shipping *multiply2;
+							}
+						}
+						g_currency_State = l_currency_State
+						flag.src = "images/"+g_currency_State +".png"
+				}//end of function
+
+			function setCurrentTime()
+			{
+				let clock = document.getElementById('dateArea');
+				let noon = 12;
+
+		    let currentTime = new Date();
+
+				let years = currentTime.getFullYear();
+				let months = currentTime.getMonth();
+				let dates =  currentTime.getDate()
+		    let hours = currentTime.getHours();
+		    let minutes = currentTime.getMinutes();
+		    let seconds = currentTime.getSeconds();
+		    let meridian = "AM";
+
+				if(hours >= noon)
+				{
+					meridian = "PM";
+				}
+				if(hours > noon)//is hours more than noon?
+		    //in other words, 13PM- 12PM =1 pm
+				{
+					hours = hours - 12;
+				}
+				if((months+1) < 10)
+				{
+					months = "0" + (months+1);
+				}
+
+				if(dates < 10)
+				{
+					dates = "0" + dates;
+				}
+				if(minutes < 10)// is this less than 10?
+				{
+					minutes = "0" + minutes;
+				}
+				if(seconds < 10)
+				{
+						seconds = "0" +seconds;
+				}
+
+				var clockTime = years +"/"+ months +"/" + dates+"/"+hours + ':' +minutes + ':' + seconds + " "+meridian + "!";
+		    clock.innerText = clockTime;
+
+			}
+			var oneSecond = 1000;
+			window.setInterval(setCurrentTime,oneSecond);
+
+
+			function itemDetails()
+			{
+
+
+			}
+
+			function addItem1()// -way1
+			{
+				// debugger;
+				//Note :
+				//below way 1 is made without plan(framework) it takes 5 hours(to prove myself)
+				//Honestly, this way is awful : this made code just one by one, it appears that it will definitely make a bunch of error and have to revise  a bunch of time.
+				//Anyway, Just remember don't make code one by one.
+
+
+				let target3 = document.getElementById("addItemId");
+				let Itemqty = parseInt(document.getElementById("addItemQty").value);
+				let findI = false;
+				let findJ = false;
+				let indexJ =0;
+
+				while(1)//for the purspoe of using break or continue
+				{//Start
+					for(var i = 0; i < storeItems.length; i++)
+					{
+						if(storeItems[i].itemID ==target3.value )
+						{
+							for(let j = 0; j <= cartItems.length;j++)
+							{
+								if(j >= 1 && j >= cartItems.length )
+								{
+									break;
+								}
+
+								if(cartItems.length ==0) // first time
+								{
+									if(Itemqty > storeItems[i].max)
+									{
+											let leftovers = Itemqty -storeItems[i].max;
+											Itemqty = Itemqty -leftovers;
+											storeItems[i].qty = storeItems[i].qty - Itemqty;
+									}
+									else
+									{
+										storeItems[i].qty = storeItems[i].qty - Itemqty;
+									}
+									cartItems.push(new cartItem(storeItems[i].itemID,storeItems[i].price,Itemqty,5));
+									findJ =true;
+									break;
+								}
+								//it is has existed
+								if(cartItems.length > 0)//second time
+								{
+									 // debugger;
+									if(cartItems[j].itemID == storeItems[i].itemID)
+									{
+										// debugger;
+										cartItems[j].qty = cartItems[j].qty + Itemqty
+										storeItems[i].qty = storeItems[i].qty - Itemqty;
+										if(cartItems[j].qty > storeItems[i].max)
+										{
+											// debugger;
+											let leftovers = cartItems[j].qty - storeItems[i].max;
+											cartItems[j].qty = storeItems[i].max;//fixed value
+											storeItems[i].qty =storeItems[i].qty + leftovers;
+										}
+										findJ = true;
+										indexJ = i;
+										break;
+									}
+								}
+							}//end of j for statement
+							findI = true;
+							break;
+						}
+					}//end of I statement
+					if(findI == false)
+					{
+						let outputarea = document.getElementById("addIDValidationMessage");
+						window.alert("Your Item ID must be wrong, Please, choose one of them above")
+						outputarea.innerHTML = "Your Item ID must be wrong, Please, choose one of them above";
+						break;// break the while
+					}
+					else if (findI == true)
+					{
+						console.log("1");
+						displayStoreItems();
+						displayCartItems();
+					}
+					if(findJ == false)
+					{
+						console.log("2");
+							// debugger;
+							if(Itemqty > storeItems[indexJ].max)
+							{
+									let leftovers = Itemqty -storeItems[indexJ].max;
+									Itemqty = Itemqty -leftovers;
+									storeItems[indexJ].qty = storeItems[indexJ].qty - Itemqty;
+							}
+							else
+							{
+								storeItems[indexJ].qty = storeItems[indexJ].qty - Itemqty;
+							}
+								cartItems.push(new cartItem(storeItems[i].itemID,storeItems[indexJ].price,Itemqty,5));
+								displayStoreItems();
+								displayCartItems();
+					}
+				}//end of while
+			}//end of function
+
+			function validate(num)
+			{
+			 let Itemqty = parseInt(document.getElementById("addItemQty").value);
+				if(num == 1)
+				{
+					if(Itemqty <= 0)
+					{
+						alert("type the number that is bigger than 0");
+					}
+					else addItem2();//Acutally, I can drag addItem validation to this function but I will keep it for the basic plan.
+				}
+				else if(num == 2)
+				{
+					if(Itemqty <= 0)
+					{
+						alert("type the number that is bigger than 0");
+					}
+					else removeItems();
+				}
+				else if(num ==3)
+				{
+					itemDetails();
+				}
+			}
+
+			function addItem2()//-way 2
+			{
+				//this is basic plan that I made
+				// Is there any Item code that I Input in storeItems?
+				// YES
+				// 		then the input item-ID has already existed in my cartItemsArray?
+				// 		YES
+				//       then just modify the existed Item's qunatitiy
+				//			 has modified Item's quantity exceed Max per Person?
+				//  		 YES
+				//						Fixed the value and do not substract the value in ////							storeItems
+				//			 NOPE
+				//						then just modify the existed Item's quantity
+				//						substract the value of storeItems
+				// 		NOPE
+				// 		Just push the new object in the CartItemsArray
+				// 		Call the function of updating StoreItems.
+				// 		Call the function of Upadting CartItems.
+				//Nope
+				// 	then output that "Your ItemID must be wrong."
+				//-------------------------------------------------------------------
+			 // just write code side by side.
+			 let outputarea = document.getElementById("addIDValidationMessage");
+			 let getItemId = document.getElementById("addItemId").value;
+			 let Itemqty = parseInt(document.getElementById("addItemQty").value);
+
+				if(circulateArray(getItemId,storeItems)) // Is there any Item code that I (Input) in (storeItems)?
+				{// YES
+					 if(circulateArray(getItemId,cartItems))//then the input item-ID has already existed in my cartItemsArray?
+					 {//YES
+						 	modifyObject(getItemId,Itemqty);//then just modify the existed Item's quantity
+							displayStoreItems();
+							displayCartItems();
+					 }
+					 else
+					 {//NOPE
+						 pushCartArray(getItemId,Itemqty,5);//Just push the new object in the CartItemsArray
+						 displayStoreItems();// Call the function of updating StoreItems.
+						 displayCartItems();//Call the function of Upadting CartItems.
+				 	}
+			 	}
+			 	else
+			 	{//Nope
+			 			// 	then output that "Your ItemID must be wrong."
+					window.alert("Your Item ID must be wrong, Please, choose one of them above")
+					outputarea.innerHTML = "Your Item ID must be wrong, Please, choose one of them above";
+				}
+			}//end of function
+
+			function circulateArray(ItemID,array)
+			{//start
+				for(let i = 0; i < array.length; i++)
+				{
+					if(ItemID == array[i].itemID)
+					{
+						return true;
+					}
+				}
+				return false;
+			}//end
+
+			function pushCartArray(ItemID,Itemqty,shipping)
+			{
+				let findIndex = 0;
+				for(let i =0; i < storeItems.length;i++)
+				{
+					if(ItemID == storeItems[i].itemID)
+					{
+						findIndex = i;
+						break;
+					}
+				}
+				//is it exceeded the max?
+				if(Itemqty > storeItems[findIndex].max)
+				{//YES
+							let exceed = Itemqty - storeItems[findIndex].max;
+							Itemqty =Itemqty -exceed;
+							storeItems[findIndex].qty = storeItems[findIndex].qty - Itemqty;
+							cartItems.push(new cartItem(storeItems[findIndex].itemID,storeItems[findIndex].price,Itemqty,shipping));
+				}
+				else
+				{//Nope
+					storeItems[findIndex].qty = storeItems[findIndex].qty - Itemqty;
+					cartItems.push(new cartItem(storeItems[findIndex].itemID,storeItems[findIndex].price,Itemqty,shipping));
+				}
+			}//end of function
+
+			function modifyObject(ItemID,Itemqty)
+			{
+				//find the cartItems array that match itemID
+				let findIndexI = 0;
+				let findIndexJ = 0;
+				for(let i =0; i < storeItems.length;i++)
+				{
+					if(ItemID == storeItems[i].itemID)
+					{
+						findIndexI = i;
+						break;
+					}
+				}
+
+				for(let j =0; j < cartItems.length;j++)
+				{
+					if(ItemID == cartItems[j].itemID)
+					{
+						findIndexJ = j;
+						break;
+					}
+				}
+
+				let discrimination = cartItems[findIndexJ].qty + Itemqty;
+				if(discrimination > storeItems[findIndexI].max )
+				{ //YES
+					let exceed = discrimination - storeItems[findIndexI].max;
+					Itemqty = Itemqty - exceed;
+					storeItems[findIndexI].qty = storeItems[findIndexI].qty - Itemqty;
+					cartItems[findIndexJ].qty = cartItems[findIndexJ].qty +
+					Itemqty;
+				}
+				else
+				{	//NOPE
+					storeItems[findIndexI].qty = storeItems[findIndexI].qty - Itemqty;
+					cartItems[findIndexJ].qty = cartItems[findIndexJ].qty +
+					Itemqty;
+				}
+			}
+
+			//Remove button
+			function removeItems()
+			{
+			let outputarea = document.getElementById("addIDValidationMessage");
+ 			 let getItemId = document.getElementById("addItemId").value;
+ 			 let Itemqty = parseInt(document.getElementById("addItemQty").value);
+
+ 				if(circulateArray(getItemId,cartItems))
+ 				{
+ 						 	subStractObject(getItemId,Itemqty);//then just modify the existed Item's quantity
+ 							displayStoreItems();
+ 							displayCartItems();
+ 			 	}
+ 			 	else
+ 			 	{//Nope
+ 					window.alert("Your Item ID must be wrong, Please, choose one of them in the Cart")
+ 					outputarea.innerHTML = "Your Item ID must be wrong, Please, choose one of them in the Cart";
+ 				}
+			}
+			function howManyCart(ItemID,array)
+			{
+				//find the cartItems array that match itemID
+				let findIndexI = 0;
+				for(let i =0; i < cartItems.length;i++)
+				{
+					if(ItemID == cartItems[i].itemID)
+					{
+						findIndexI = i;
+						break;
+					}
+				}
+
+				if(cartItems[findIndexI].qty > 1)
+				{
+					return true;
+				}
+				return false;
+			}
+
+			function subStractObject(ItemID,Itemqty)
+			{
+				//find the cartItems array that match itemID
+				let findIndexI = 0;
+				let findIndexJ = 0;
+				for(let i =0; i < storeItems.length;i++)
+				{
+					if(ItemID == storeItems[i].itemID)
+					{
+						findIndexI = i;
+						break;
+					}
+				}
+				for(let j =0; j < cartItems.length;j++)
+				{
+					if(ItemID == cartItems[j].itemID)
+					{
+						findIndexJ = j;
+						break;
+					}
+				}
+				let discrimination = cartItems[findIndexJ].qty - Itemqty;
+				if(discrimination <= 0)
+				{ //YES
+					// debugger;
+					let exceed = discrimination;
+						Itemqty = Itemqty + exceed;
+						storeItems[findIndexI].qty = storeItems[findIndexI].qty + Itemqty
+					cartItems[findIndexJ].qty = cartItems[findIndexJ].qty -
+					Itemqty;
+					if(cartItems[findIndexJ].qty <= 0)
+					{
+						let tempArray = [];
+						for(let i = findIndexJ; i < cartItems.length; i++)
+						{
+							if(cartItems[i+1] != null)
+							{
+								tempArray.push(cartItems[i+1]);
+							}
+						}
+						for(let i = findIndexJ; i < cartItems.length; i++)
+						{
+							cartItems.pop();
+						}
+						for(let i = 0; i < tempArray.length; i++)
+						{
+							cartItems.push(tempArray[i]);
+						}
+					}
+				}
+				else
+				{	//NOPE
+					storeItems[findIndexI].qty = storeItems[findIndexI].qty + Itemqty;
+					cartItems[findIndexJ].qty = cartItems[findIndexJ].qty -
+					Itemqty;
+				}
+			}
+
+			function findIndex(ItemID)
+			{
+				let findIndex = 0;
+				for(let i =0; i < storeItems.length;i++)
+				{
+					if(ItemID == storeItems[i].itemID)
+					{
+						findIndex = i;
+						break;
+					}
+				}
+				return findIndex;
+			}
+
+			function itemDetails()
+			{
+				let message = "";
+				let submessage ="\n";
+				let getItemId = document.getElementById("addItemId").value;
+				//Firstly, it has to check the whether ID is validity
+				//2, then just output all of it except Images
+				if(circulateArray(getItemId,storeItems))
+				{
+					let fI = findIndex(getItemId);
+					for(let i=0; i < storeItems[fI].reviews.length; i++)
+					{
+							submessage += storeItems[fI].reviews[i]+",\n";
+					}
+					message = "Item Details : "+"\n"
+					+"Id : "+storeItems[fI].itemID+"\n"
+					+"Product : "+storeItems[fI].nproduct+"\n"
+					+"Price : "+storeItems[fI].price+"\n"
+					+"Qty Available : "+storeItems[fI].qty+"\n"
+					+"Max Per Customer : "+storeItems[fI].max+"\n"
+					+"Cost of Shipping : "+storeItems[fI].costOfShipping+"\n"
+					+"\n"
+					+"Description : "+storeItems[fI].description+"\n"
+					+"\n"
+					+"Review : "+submessage+"\n"
+
+				}
+				else
+				{
+					message = "There is no ItemID that has been matchted";
+				}
+				alert(message);
+			}
+
+				function review()
+				{
+
+					let reviewId = document.getElementById("reviewId").value;
+					let reviewIdMsg =document.getElementById("reviewIdMsg");
+					let reviewDesc =document.getElementById("reviewDesc").value;
+					let message = "";
+
+					if(circulateArray(reviewId,storeItems))
+					{
+						let fI = findIndex(reviewId);
+						storeItems[fI].reviews.push(reviewDesc);
+						message = "Reivew successfully has been uploaded";
+					}
+					else
+					{
+						message = "There is no ItemID that has been matchted";
+					}
+					document.getElementById("reviewIdMsg").value = message;
+					document.getElementById("reviewId").value = "";
+					document.getElementById("reviewDesc").value = "";
+				}
+			</script>
+	</body>
+</html>

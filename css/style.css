@@ -1,0 +1,65 @@
+@media only screen and (max-width :600px)
+{
+  body
+  {
+  background-color : darkred;
+  }
+}
+
+@media only screen and (min-width :600px)
+{
+  body
+  {
+  background-color : lightblue;
+  }
+}
+h1 {
+  text-align-last: center;
+  position: relative;
+
+  /* left: 100px; */
+  top: -130px;
+  /* padding: 80px 50px; */
+  /* background-color : cyan; */
+  /* background-image: url("https://mail.naver.com/read/image/?mailSN=40931&attachIndex=2&contentType=image/png&offset=1384&size=117852&mimeSN=1586062959.340951.5864.18176&org=1&u=soing1551"); */
+  color : white;
+}
+#seeber
+{
+  padding: 80px 50px;
+  margin :15px 0 0 0;
+  background-image: url("images/background.jpg");
+  background-repeat: no-repeat;
+  background-size :auto;
+  background-position: center;
+  position : static;
+}
+select,input
+{
+  background-color: rgb(189, 199, 219);
+}
+
+.inventoryOutput
+{
+  border: 2px solid darkblue;
+  text-align:center;
+
+  /* width :80px; */
+  /* height :100px; */
+  width : 80px;
+}
+
+.test
+{
+  border: 2px solid darkblue;
+  text-align:center;
+  font-weight: bold;
+  width : 88px;
+
+}
+
+.currencyFlag
+{
+  width :15px;
+  height :12px;
+}
